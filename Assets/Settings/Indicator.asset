@@ -15,19 +15,19 @@ MonoBehaviour:
   <Settings>k__BackingField:
   - Mult: 1
     Text: "\u041D\u0435\u043F\u043B\u043E\u0445\u043E"
-    Clip: {fileID: 0}
+    Clip: {fileID: 7400000, guid: f3ef7a8544dbf844ca87306b417b94c5, type: 2}
   - Mult: 2
     Text: "\u0425\u043E\u0440\u043E\u0448\u043E"
-    Clip: {fileID: 0}
+    Clip: {fileID: 7400000, guid: 2cc587680b1c2de458308b50a870cfc9, type: 2}
   - Mult: 3
     Text: "\u041E\u0442\u043B\u0438\u0447\u043D\u043E"
-    Clip: {fileID: 0}
+    Clip: {fileID: 7400000, guid: e34ea2ae3cc668445bcad489fdad744b, type: 2}
   - Mult: 4
     Text: "\u0417\u0430\u043C\u0435\u0447\u0430\u0442\u0435\u043B\u044C\u043D\u043E"
-    Clip: {fileID: 0}
+    Clip: {fileID: 7400000, guid: 1ed7a6d85ed608446b4235996a57d4f6, type: 2}
   - Mult: 5
     Text: "\u0412\u0435\u043B\u0438\u043A\u043E\u043B\u0435\u043F\u043D\u043E"
-    Clip: {fileID: 0}
+    Clip: {fileID: 7400000, guid: 4ffe1afc44ee95f4fad8fcad8b926594, type: 2}
   - Mult: 6
     Text: Carnage
-    Clip: {fileID: 0}
+    Clip: {fileID: 7400000, guid: d45af3d7acfaedc41aa7d6c0607e6e9c, type: 2}

@@ -237,6 +237,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: -104.53696
       objectReference: {fileID: 0}
+    - target: {fileID: 3573608487296360308, guid: 3d8d2372555f61044a0d8da99a28f6b8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -1.8056296
+      objectReference: {fileID: 0}
     - target: {fileID: 4111073652851612589, guid: 3d8d2372555f61044a0d8da99a28f6b8, type: 3}
       propertyPath: m_text
       value: 2
@@ -345,11 +349,44 @@ PrefabInstance:
       propertyPath: m_Pitch
       value: 0.2
       objectReference: {fileID: 0}
+    - target: {fileID: 9166843516676085818, guid: 3d8d2372555f61044a0d8da99a28f6b8, type: 3}
+      propertyPath: m_FillAmount
+      value: 0.101
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8838953841837266385, guid: 3d8d2372555f61044a0d8da99a28f6b8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4680491616492424295}
   m_SourcePrefab: {fileID: 100100000, guid: 3d8d2372555f61044a0d8da99a28f6b8, type: 3}
+--- !u!1 &3814694128467081045 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8838953841837266385, guid: 3d8d2372555f61044a0d8da99a28f6b8, type: 3}
+  m_PrefabInstance: {fileID: 5646038016582787716}
+  m_PrefabAsset: {fileID: 0}
+--- !u!111 &4680491616492424295
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3814694128467081045}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: f3ef7a8544dbf844ca87306b417b94c5, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: f3ef7a8544dbf844ca87306b417b94c5, type: 2}
+  - {fileID: 7400000, guid: 2cc587680b1c2de458308b50a870cfc9, type: 2}
+  - {fileID: 7400000, guid: e34ea2ae3cc668445bcad489fdad744b, type: 2}
+  - {fileID: 7400000, guid: 1ed7a6d85ed608446b4235996a57d4f6, type: 2}
+  - {fileID: 7400000, guid: 4ffe1afc44ee95f4fad8fcad8b926594, type: 2}
+  - {fileID: 7400000, guid: d45af3d7acfaedc41aa7d6c0607e6e9c, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 0
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!224 &8357618445330985256 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4442510879257269164, guid: 3d8d2372555f61044a0d8da99a28f6b8, type: 3}
