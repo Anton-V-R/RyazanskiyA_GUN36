@@ -21375,6 +21375,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 280190913691780195, guid: fc961c8674902004d8d9b07c47d23b89, type: 3}
+      propertyPath: _maxSumFontSize
+      value: 61.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 680924349357697808, guid: fc961c8674902004d8d9b07c47d23b89, type: 3}
+      propertyPath: m_HorizontalAlignment
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3068383501739582262, guid: fc961c8674902004d8d9b07c47d23b89, type: 3}
+      propertyPath: m_HorizontalAlignment
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 8386750234903901576, guid: fc961c8674902004d8d9b07c47d23b89, type: 3}
       propertyPath: m_Name
       value: GUI
