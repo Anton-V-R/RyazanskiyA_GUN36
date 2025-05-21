@@ -1,0 +1,11 @@
+S:\MyForkGit\Final Task\Final Task\bin\Debug\Final Task.exe.config
+S:\MyForkGit\Final Task\Final Task\bin\Debug\Final Task.exe
+S:\MyForkGit\Final Task\Final Task\bin\Debug\Final Task.pdb
+S:\MyForkGit\Final Task\Final Task\bin\Debug\Newtonsoft.Json.dll
+S:\MyForkGit\Final Task\Final Task\bin\Debug\Newtonsoft.Json.xml
+S:\MyForkGit\Final Task\Final Task\obj\Debug\Final Task.csproj.AssemblyReference.cache
+S:\MyForkGit\Final Task\Final Task\obj\Debug\Final Task.csproj.CoreCompileInputs.cache
+S:\MyForkGit\Final Task\Final Task\obj\Debug\Final Task.csproj.Up2Date
+S:\MyForkGit\Final Task\Final Task\obj\Debug\Final Task.exe
+S:\MyForkGit\Final Task\Final Task\obj\Debug\Final Task.pdb
+S:\MyForkGit\Final Task\Final Task\obj\Debug\Final Task.exe.config
