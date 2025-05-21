@@ -1,14 +1,8 @@
 ﻿using System;
-using System;
-using System.Collections.Generic;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using Final_Task.Games.Base;
-using Final_Task.Models;
 using Final_Task.Models.Enums;
 using Final_Task.Utilites;
 
@@ -16,11 +10,11 @@ namespace Final_Task.Games.Blackjack
 {
     public class BlackjackGame : CasinoGameBase
     {
-        private readonly int _numberOfCards;
-        private Queue<Card> _deck;
-        private readonly List<Card> _playerCards;
         private readonly List<Card> _computerCards;
-
+        private readonly int _numberOfCards;
+        private readonly List<Card> _playerCards;
+        private Queue<Card> _deck;
+        
         /// <summary>
         /// Колода карт
         /// </summary>
@@ -36,45 +30,6 @@ namespace Final_Task.Games.Blackjack
             _computerCards = new List<Card>();
 
             FactoryMethod();
-        }
-
-        protected override void FactoryMethod()
-        {
-            CreateDeck();
-            Shuffle();
-            DealInitialCards();
-        }
-
-        private void CreateDeck()
-        {
-            var cards = new List<Card>();
-
-            for(int i = 0; i < _numberOfCards; i++)
-            {
-                var suit = (CardSuit)RandomProvider.Next(0, 4);
-                var rank = (CardRank)RandomProvider.Next(6, 14);
-                cards.Add(new Card(suit, rank));
-            }
-
-            _deck = new Queue<Card>(cards);
-        }
-
-        private void Shuffle()
-        {
-            var shuffled = _deck.OrderBy(x => RandomProvider.Next(0, int.MaxValue)).ToList();
-            _deck = new Queue<Card>(shuffled);
-        }
-
-        private void DealInitialCards()
-        {
-            if(_deck.Count > 0)
-            {
-                _playerCards.Add(_deck.Dequeue());
-                _playerCards.Add(_deck.Dequeue());
-                _computerCards.Add(_deck.Dequeue());
-                _computerCards.Add(_deck.Dequeue());
-            }
-
         }
 
         public override void PlayGame()
@@ -105,6 +60,13 @@ namespace Final_Task.Games.Blackjack
             DetermineWinner(playerScore, computerScore);
         }
 
+        protected override void FactoryMethod()
+        {
+            CreateDeck();
+            Shuffle();
+            DealInitialCards();
+        }
+
         private int CalculateScore(List<Card> cards)
         {
             int score = 0;
@@ -130,6 +92,32 @@ namespace Final_Task.Games.Blackjack
             }
 
             return score;
+        }
+
+        private void CreateDeck()
+        {
+            var cards = new List<Card>();
+
+            for(int i = 0; i < _numberOfCards; i++)
+            {
+                var suit = (CardSuit)RandomProvider.Next(0, 4);
+                var rank = (CardRank)RandomProvider.Next(6, 14);
+                cards.Add(new Card(suit, rank));
+            }
+
+            _deck = new Queue<Card>(cards);
+        }
+
+        private void DealInitialCards()
+        {
+            if(_deck.Count > 0)
+            {
+                _playerCards.Add(_deck.Dequeue());
+                _playerCards.Add(_deck.Dequeue());
+                _computerCards.Add(_deck.Dequeue());
+                _computerCards.Add(_deck.Dequeue());
+            }
+
         }
 
         private void DetermineWinner(int playerScore, int computerScore)
@@ -175,6 +163,12 @@ namespace Final_Task.Games.Blackjack
             Console.WriteLine("\nComputer cards:");
             foreach(var card in _computerCards)
                 Console.WriteLine($"{card.Rank} of {card.Suit}");
+        }
+
+        private void Shuffle()
+        {
+            var shuffled = _deck.OrderBy(x => RandomProvider.Next(0, int.MaxValue)).ToList();
+            _deck = new Queue<Card>(shuffled);
         }
     }
 }

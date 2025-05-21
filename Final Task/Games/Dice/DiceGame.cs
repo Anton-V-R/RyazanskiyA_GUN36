@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 using Final_Task.Games.Base;
 
@@ -14,9 +10,9 @@ namespace Final_Task.Games.Dice
     /// </summary>
     public class DiceGame : CasinoGameBase
     {
-        private readonly int _numberOfDice;
-        private readonly int _minValue;
         private readonly int _maxValue;
+        private readonly int _minValue;
+        private readonly int _numberOfDice;
         private List<Dice> _diceCollection;
 
         /// <summary>
@@ -39,16 +35,6 @@ namespace Final_Task.Games.Dice
             _maxValue = maxValue;
 
             FactoryMethod();
-        }
-
-        protected override void FactoryMethod()
-        {
-            _diceCollection = new List<Dice>(_numberOfDice);
-
-            for(int i = 0; i < _numberOfDice; i++)
-            {
-                _diceCollection.Add(new Dice(_minValue, _maxValue));
-            }
         }
 
         /// <summary>
@@ -81,6 +67,15 @@ namespace Final_Task.Games.Dice
             }
         }
 
+        protected override void FactoryMethod()
+        {
+            _diceCollection = new List<Dice>(_numberOfDice);
+
+            for(int i = 0; i < _numberOfDice; i++)
+            {
+                _diceCollection.Add(new Dice(_minValue, _maxValue));
+            }
+        }
         private int RollDice(string playerName)
         {
             Console.WriteLine($"\n{playerName} бросает:");

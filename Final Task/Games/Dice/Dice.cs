@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Final_Task.Exeptions;
+﻿using Final_Task.Exeptions;
 using Final_Task.Utilites;
 
 namespace Final_Task.Games.Dice
@@ -14,14 +8,8 @@ namespace Final_Task.Games.Dice
     /// </summary>
     public struct Dice
     {
-        private readonly int _min;
         private readonly int _max;
-
-        /// <summary>
-        /// Выпавшее число
-        /// </summary>
-        public int Number => RandomProvider.Next(_min, _max + 1);
-
+        private readonly int _min;
         public Dice(int min, int max)
         {
             if(min < 1 || max > int.MaxValue || min > max)
@@ -30,5 +18,10 @@ namespace Final_Task.Games.Dice
             _min = min;
             _max = max;
         }
+
+        /// <summary>
+        /// Выпавшее число
+        /// </summary>
+        public int Number => RandomProvider.Next(_min, _max + 1);
     }
 }
