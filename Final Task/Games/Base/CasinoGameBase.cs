@@ -1,41 +1,55 @@
 ﻿using System;
 
+using Final_Task.Utilites;
+
 namespace Final_Task.Games.Base
 {
     public abstract class CasinoGameBase : IGame
     {
+        private Action _onDraw;
+
+        private Action _onLose;
+
+        private Action _onWin;
+
+        public event Action OnDraw
+        {
+            add => _onDraw += value;
+            remove => _onDraw -= value;
+        }
+
+        public event Action OnLose
+        {
+            add => _onLose += value;
+            remove => _onLose -= value;
+        }
+
+        public event Action OnWin
+        {
+            add => _onWin += value;
+            remove => _onWin -= value;
+        }
+
+        public virtual void Draw()
+        {
+            PrintResult.ColorInfo("Ничья!", ConsoleColor.Yellow);
+            _onDraw?.Invoke();
+        }
+
+        public virtual void Lose()
+        {
+            PrintResult.ColorInfo("Вы проиграли!", ConsoleColor.Magenta);
+            _onLose?.Invoke();
+        }
+
         public abstract void PlayGame();
 
+        public virtual void Win()
+        {
+            PrintResult.ColorInfo("Вы выиграли", ConsoleColor.Green);
+            _onWin?.Invoke();
+        }
+
         protected abstract void FactoryMethod();
-
-        public event EventHandler GameWon;
-        public event EventHandler GameLost;
-        public event EventHandler GameDrawn;
-
-        protected virtual void OnGameWon()
-        {
-            Console.ForegroundColor = ConsoleColor.Green;
-            GameWon?.Invoke(this, EventArgs.Empty);
-            Console.ResetColor();
-        }
-
-        protected virtual void OnGameLost()
-        {
-            Console.ForegroundColor = ConsoleColor.Magenta;
-            GameLost?.Invoke(this, EventArgs.Empty);
-            Console.ResetColor();
-        }
-
-        protected virtual void OnGameDrawn()
-        {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            GameDrawn?.Invoke(this, EventArgs.Empty);
-            Console.ResetColor();
-        }
-
-        protected void PrintResult(string result)
-        {
-            Console.WriteLine($"Game result: {result}");
-        }
     }
 }

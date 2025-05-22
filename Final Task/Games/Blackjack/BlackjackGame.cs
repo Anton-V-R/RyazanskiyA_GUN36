@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 
 using Final_Task.Games.Base;
 using Final_Task.Models.Enums;
@@ -10,19 +11,18 @@ namespace Final_Task.Games.Blackjack
 {
     public class BlackjackGame : CasinoGameBase
     {
+        private const byte _deltaScore = 10;
+        private const byte _maxCardRank = 14;
+        private const byte _maxCardSuit = 4;
+        private const byte _minAces = 0;
+        private const byte _minCardRank = 6;
+        private const byte _minCardSuit = 0;
+        private const byte _winScore = 21;
         private readonly List<Card> _computerCards;
         private readonly byte _numberOfCards;
-        private const byte _minCardSuit = 0;
-        private const byte _maxCardSuit = 4;
-        private const byte _minCardRank = 6;
-        private const byte _maxCardRank = 14;
-        private const byte _winScore = 21;
-        private const byte _deltaScore = 10;
-        private const byte _minAces = 0;
-
         private readonly List<Card> _playerCards;
         private Queue<Card> _deck;
-        
+
         /// <summary>
         /// Колода карт
         /// </summary>
@@ -42,18 +42,18 @@ namespace Final_Task.Games.Blackjack
 
         public override void PlayGame()
         {
-            Console.WriteLine("Starting Blackjack game...");
+            PrintResult.Info("Starting Blackjack game...");
             PrintCards();
 
             byte playerScore = CalculateScore(_playerCards);
             byte computerScore = CalculateScore(_computerCards);
 
-            Console.WriteLine($"Your score: {playerScore}");
-            Console.WriteLine($"Computer score: {computerScore}");
+            PrintResult.Info($"Your score: {playerScore}");
+            PrintResult.Info($"Computer score: {computerScore}");
 
             while(playerScore == computerScore && playerScore < _winScore && _deck.Count > 0)
             {
-                Console.WriteLine("Tie! Dealing additional cards...");
+                PrintResult.Info("Tie! Dealing additional cards...");
                 _playerCards.Add(_deck.Dequeue());
                 _computerCards.Add(_deck.Dequeue());
 
@@ -61,12 +61,13 @@ namespace Final_Task.Games.Blackjack
                 computerScore = CalculateScore(_computerCards);
 
                 PrintCards();
-                Console.WriteLine($"Your score: {playerScore}");
-                Console.WriteLine($"Computer score: {computerScore}");
+                PrintResult.Info($"Your score: {playerScore}");
+                PrintResult.Info($"Computer score: {computerScore}");
             }
 
             DetermineWinner(playerScore, computerScore);
         }
+
 
         protected override void FactoryMethod()
         {
@@ -129,45 +130,73 @@ namespace Final_Task.Games.Blackjack
         {
             if(playerScore > _winScore && computerScore > _winScore)
             {
-                PrintResult("Both players bust");
-                OnGameDrawn();
+                PrintResult.Info("Both players bust");
+                Draw();
             }
             else if(playerScore > _winScore)
             {
-                PrintResult("You bust");
-                OnGameLost();
+                PrintResult.Info("You bust");
+                Lose();
             }
             else if(computerScore > _winScore)
             {
-                PrintResult("Computer bust");
-                OnGameWon();
+                PrintResult.Info("Computer bust");
+                Win();
             }
             else if(playerScore > computerScore)
             {
-                PrintResult("You win");
-                OnGameWon();
+                PrintResult.Info("You win");
+                Win();
             }
             else if(computerScore > playerScore)
             {
-                PrintResult("Computer wins");
-                OnGameLost();
+                PrintResult.Info("Computer wins");
+                Lose();
             }
             else
             {
-                PrintResult("Push");
-                OnGameDrawn();
+                PrintResult.Info("Push");
+                Draw();
             }
         }
 
         private void PrintCards()
         {
-            Console.WriteLine("\nYour cards:");
+            string descr, rankName;
+            PrintResult.Info("\nYour cards:");
             foreach(var card in _playerCards)
-                Console.WriteLine($"{card.Rank} of {card.Suit}");
+            {
+                CardInfo(card, out descr, out rankName);
+                PrintResult.Info($"{rankName} {descr}-{card.Suit}");
+            }
 
-            Console.WriteLine("\nComputer cards:");
+            PrintResult.Info("\nComputer cards:");
             foreach(var card in _computerCards)
-                Console.WriteLine($"{card.Rank} of {card.Suit}");
+            {
+                CardInfo(card, out descr, out rankName);
+                PrintResult.Info($"{rankName} {descr}-{card.Suit}");
+            }
+        }
+
+        private static void CardInfo(Card card, out string descr, out string rankName)
+        {
+            try
+            {
+                descr = card.GetDescription(card.Suit);
+                string suitName = Enum.GetName(typeof(CardSuit), card.Suit); // "Hearts"
+                rankName = Enum.GetName(typeof(CardRank), card.Rank);
+
+            }
+            catch(Exception ex)
+            {
+                descr = card.Suit.ToString();
+                rankName = card.Rank.ToString();
+                PrintResult.ColorInfo($"{card.Rank} {card.Suit} {ex.Message}", ConsoleColor.Red);
+            }
+            finally
+            {
+
+            }
         }
 
         private void Shuffle()

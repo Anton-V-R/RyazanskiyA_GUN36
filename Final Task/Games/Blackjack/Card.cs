@@ -1,4 +1,7 @@
-﻿using Final_Task.Models.Enums;
+﻿using System;
+using System.ComponentModel;
+
+using Final_Task.Models.Enums;
 
 namespace Final_Task.Games.Blackjack
 {
@@ -23,6 +26,11 @@ namespace Final_Task.Games.Blackjack
         /// </summary>
         public CardSuit Suit { get; }
 
-        public override string ToString() => $"{Rank} of {Suit}";
+        public string GetDescription(Enum value)
+        {
+            var field = value.GetType().GetField(value.ToString());
+            var attribute = (DescriptionAttribute)Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute));
+            return attribute?.Description ?? value.ToString();
+        }
     }
 }

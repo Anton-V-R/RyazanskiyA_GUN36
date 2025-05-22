@@ -2,6 +2,7 @@
 using System.IO;
 
 using Final_Task.Models;
+using Final_Task.Utilites;
 
 using Newtonsoft.Json;
 
@@ -34,7 +35,7 @@ namespace Final_Task.Services
             }
             catch(Exception ex) //when(ex is IOException or JsonException)
             {
-                Console.WriteLine($"Error loading profile: {ex.Message}");
+                PrintResult.Info($"Error loading profile: {ex.Message}");
                 return CreateNewProfile();
             }
         }
@@ -53,13 +54,13 @@ namespace Final_Task.Services
             }
             catch(Exception ex) //when(ex is IOException or JsonException)
             {
-                Console.WriteLine($"Error saving profile: {ex.Message}");
+                PrintResult.Info($"Error saving profile: {ex.Message}");
             }
         }
 
         private PlayerProfile CreateNewProfile()
         {
-            Console.WriteLine("Creating new player profile...");
+            PrintResult.Info("Creating new player profile...");
             Console.Write("Enter your name: ");
             string name = Console.ReadLine();
 

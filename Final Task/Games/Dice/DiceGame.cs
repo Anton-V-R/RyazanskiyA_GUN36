@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using Final_Task.Games.Base;
+using Final_Task.Utilites;
 
 namespace Final_Task.Games.Dice
 {
@@ -43,27 +44,24 @@ namespace Final_Task.Games.Dice
         /// <param name="playerBet">Ставка</param>
         public override void PlayGame()
         {
-            Console.WriteLine($"Количество костей {_numberOfDice} значения ({_minValue}-{_maxValue})");
+            PrintResult.Info($"Количество костей {_numberOfDice} значения ({_minValue}-{_maxValue})");
 
             byte playerScore = RollDice("Player");
             byte computerScore = RollDice("Computer");
 
-            Console.WriteLine($"\n  Результат - Player: {playerScore}, Computer: {computerScore}");
+            PrintResult.Info($"\n  Результат - Player: {playerScore}, Computer: {computerScore}");
 
             if(playerScore > computerScore)
             {
-                PrintResult("Вы выиграли");
-                OnGameWon();
+                Win();
             }
             else if(computerScore > playerScore)
             {
-                PrintResult("Вы проиграли!");
-                OnGameLost();
+                Lose();
             }
             else
             {
-                PrintResult("Ничья!");
-                OnGameDrawn();
+                Draw();
             }
         }
 
@@ -78,17 +76,17 @@ namespace Final_Task.Games.Dice
         }
         private byte RollDice(string playerName)
         {
-            Console.WriteLine($"\n{playerName} бросает:");
+            PrintResult.Info($"\n{playerName} бросает:");
             byte total = 0;
 
             foreach(var dice in _diceCollection)
             {
                 byte roll = dice.Number;
-                Console.WriteLine($"выпало: {roll}");
+                PrintResult.Info($"выпало: {roll}");
                 total += roll;
             }
 
-            Console.WriteLine($"Всего: {total}");
+            PrintResult.Info($"Всего: {total}");
             return total;
         }
     }
