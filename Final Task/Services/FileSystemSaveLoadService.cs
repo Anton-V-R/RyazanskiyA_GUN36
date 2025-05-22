@@ -1,34 +1,73 @@
 ﻿using System;
 using System.IO;
 
+using Final_Task.Models;
+
+using Newtonsoft.Json;
+
 namespace Final_Task.Services
 {
-    public class FileSystemSaveLoadService : ISaveLoadService<string>
+    public class FileSystemSaveLoadService : ISaveLoadService<PlayerProfile>
     {
-        private readonly string _basePath;
-
+        private const int _bank = 1000;
+        private const string _profileFileName = "player_profile.json";
+        private readonly string _profilesDirectory;
+        private readonly string _filePath;
         public FileSystemSaveLoadService(string basePath)
         {
-            _basePath = basePath ?? throw new ArgumentNullException(nameof(basePath));
-            Directory.CreateDirectory(_basePath);
+            _profilesDirectory = basePath ?? throw new ArgumentNullException(nameof(basePath));
+            Directory.CreateDirectory(_profilesDirectory);
+            _filePath = Path.Combine(_profilesDirectory, _profileFileName);
         }
 
-        public string LoadData(string identifier)
+        public PlayerProfile LoadPlayerProfile(string filePath)
         {
-            if(string.IsNullOrWhiteSpace(identifier))
-                throw new ArgumentException("Identifier cannot be empty", nameof(identifier));
+            if(!File.Exists(_filePath))
+            {
+                return CreateNewProfile();
+            }
 
-            string filePath = Path.Combine(_basePath, $"{identifier}.txt");
-            return File.Exists(filePath) ? File.ReadAllText(filePath) : null;
+            try
+            {
+                string json = File.ReadAllText(filePath);
+                return JsonConvert.DeserializeObject<PlayerProfile>(json) ?? CreateNewProfile();
+            }
+            catch(Exception ex) //when(ex is IOException or JsonException)
+            {
+                Console.WriteLine($"Error loading profile: {ex.Message}");
+                return CreateNewProfile();
+            }
         }
 
-        public void SaveData(string data, string identifier)
+        public void SavePlayerProfile(PlayerProfile profile, string profileName)
         {
-            if(string.IsNullOrWhiteSpace(identifier))
-                throw new ArgumentException("Identifier cannot be empty", nameof(identifier));
+            if(profile == null)
+                throw new ArgumentNullException(nameof(profile));
 
-            string filePath = Path.Combine(_basePath, $"{identifier}.txt");
-            File.WriteAllText(filePath, data);
+            try
+            {
+                string filePath = Path.Combine(_profilesDirectory, $"{profileName}.json");
+
+                string json = JsonConvert.SerializeObject(profile, Formatting.Indented);
+                File.WriteAllText(filePath, json);
+            }
+            catch(Exception ex) //when(ex is IOException or JsonException)
+            {
+                Console.WriteLine($"Error saving profile: {ex.Message}");
+            }
+        }
+
+        private PlayerProfile CreateNewProfile()
+        {
+            Console.WriteLine("Creating new player profile...");
+            Console.Write("Enter your name: ");
+            string name = Console.ReadLine();
+
+            return new PlayerProfile
+            {
+                Name = string.IsNullOrWhiteSpace(name) ? "Player" : name,
+                Bank = _bank
+            };
         }
     }
 

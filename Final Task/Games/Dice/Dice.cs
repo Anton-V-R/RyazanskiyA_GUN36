@@ -6,14 +6,14 @@ namespace Final_Task.Games.Dice
     /// <summary>
     /// Структура игральной кости
     /// </summary>
-    public struct Dice
+    public readonly struct Dice
     {
-        private readonly int _max;
-        private readonly int _min;
-        public Dice(int min, int max)
+        private readonly byte _max;
+        private readonly byte _min;
+        public Dice(byte min, byte max)
         {
-            if(min < 1 || max > int.MaxValue || min > max)
-                throw new WrongDiceNumberException(min > max ? max : min, 1, int.MaxValue);
+            if(min < 1 || max > byte.MaxValue || min > max)
+                throw new WrongDiceNumberException(min > max ? max : min, 1, byte.MaxValue);
 
             _min = min;
             _max = max;
@@ -22,6 +22,6 @@ namespace Final_Task.Games.Dice
         /// <summary>
         /// Выпавшее число
         /// </summary>
-        public int Number => RandomProvider.Next(_min, _max + 1);
+        public byte Number => (byte)RandomProvider.Next(_min, _max + 1);
     }
 }

@@ -5,7 +5,7 @@ namespace Final_Task.Games.Blackjack
     /// <summary>
     /// Структура карты
     /// </summary>
-    public struct Card
+    public readonly struct Card
     {
         public Card(CardSuit suit, CardRank rank)
         {
@@ -22,5 +22,7 @@ namespace Final_Task.Games.Blackjack
         /// Масть
         /// </summary>
         public CardSuit Suit { get; }
+
+        public override string ToString() => $"{Rank} of {Suit}";
     }
 }

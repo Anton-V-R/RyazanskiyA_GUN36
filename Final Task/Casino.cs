@@ -13,12 +13,14 @@ namespace Final_Task
     public class Casino
     {
         private const int maxBankValue = 1000000;
+        private const string profileKey = "player_profile";
         private readonly PlayerProfile _playerProfile;
-        private readonly ISaveLoadService<string> _saveLoadService;
-        public Casino(ISaveLoadService<string> saveLoadService)
+        private readonly ISaveLoadService<PlayerProfile> _saveLoadService;
+        public Casino(string basePath)
         {
-            _saveLoadService = saveLoadService ?? throw new ArgumentNullException(nameof(saveLoadService));
-            _playerProfile = LoadOrCreateProfile();
+            _saveLoadService = new FileSystemSaveLoadService(basePath) ?? throw new ArgumentNullException($"Error {basePath}");
+
+            _playerProfile = _saveLoadService.LoadPlayerProfile(profileKey);
 
             if(_playerProfile.Bank <= 100)
             {
@@ -30,60 +32,67 @@ namespace Final_Task
 
         public void StartGame()
         {
-            while(_playerProfile.Bank > 0)
+            try
             {
-                Console.WriteLine($"\n {_playerProfile.Name}. Текущий банк: {_playerProfile.Bank}");
-                Console.WriteLine("\n Выберите игру:");
-                Console.WriteLine("1. Блэкджек");
-                Console.WriteLine("2. Игра в кости");
-                Console.WriteLine("3. Выход");
-                Console.WriteLine("4. Пополнение банка");
-
-                int choice;
-                while(!int.TryParse(Console.ReadLine(), out choice) || (choice < 1 || choice > 4))
+                while(_playerProfile.Bank > 0)
                 {
-                    Console.WriteLine("Некорректный ввод. Введите число от 1 до 4");
+                    Console.WriteLine($"\n {_playerProfile.Name}. Текущий банк: {_playerProfile.Bank}");
+                    Console.WriteLine("\n Выберите игру:");
+                    Console.WriteLine("1. Блэкджек");
+                    Console.WriteLine("2. Игра в кости");
+                    Console.WriteLine("3. Выход");
+                    Console.WriteLine("4. Пополнение банка");
+
+                    byte choice;
+                    while(!byte.TryParse(Console.ReadLine(), out choice) || (choice < 1 || choice > 4))
+                    {
+                        Console.WriteLine("Некорректный ввод. Введите число от 1 до 4");
+                    }
+
+                    IGame game;
+
+                    switch(choice)
+                    {
+                        case 1:
+
+                            game = new BlackjackGame(36);
+                            break;
+
+                        case 2:
+
+                            Console.WriteLine("Введите количество костей (1-4)");
+
+                            byte dices;
+                            while(!byte.TryParse(Console.ReadLine(), out dices) || (dices < 1 || dices > 4))
+                            {
+                                Console.WriteLine("Некорректный ввод. Введите число от 1 до 4");
+                            }
+
+                            game = new DiceGame(dices, 1, 6);
+                            break;
+
+                        case 4:
+                            AddMoney();
+
+                            continue;
+
+                        default:
+                            //SaveProfile();
+                            Console.WriteLine("До свидания!");
+                            return;
+                    }
+
+                    PlaySelectedGame(game);
                 }
 
-                IGame game;
+                ColorConsoleWriteLine("No money? Kicked!", ConsoleColor.Red);
 
-                switch(choice)
-                {
-                    case 1:
-
-                        game = new BlackjackGame(36);
-                        break;
-
-                    case 2:
-
-                        Console.WriteLine("Введите количество костей (1-4)");
-
-                        int dices;
-                        while(!int.TryParse(Console.ReadLine(), out dices) || (dices < 1 || dices > 4))
-                        {
-                            Console.WriteLine("Некорректный ввод. Введите число от 1 до 4");
-                        }
-
-                        game = new DiceGame(dices, 1, 6);
-                        break;
-
-                    case 4:
-                        AddMoney();
-
-                        continue;
-
-                    default:
-                        SaveProfile();
-                        Console.WriteLine("До свидания!");
-                        return;
-                }
-
-                PlaySelectedGame(game);
+            }
+            finally
+            {
+                SaveProfile();
             }
 
-            ColorConsoleWriteLine("No money? Kicked!", ConsoleColor.Red);
-
-            SaveProfile();
         }
 
         private static void ColorConsoleWriteLine(string text, ConsoleColor color)
@@ -139,31 +148,8 @@ namespace Final_Task
                 _playerProfile.Bank -= bet;
                 ColorConsoleWriteLine($"Вы проиграли {bet}. Новый банк: {_playerProfile.Bank}", ConsoleColor.Red);
             }
-            
+
             CheckBankLimit();
-        }
-
-        private PlayerProfile LoadOrCreateProfile()
-        {
-            const string profileKey = "player_profile";
-            string json = _saveLoadService.LoadData(profileKey);
-
-            if(!string.IsNullOrEmpty(json))
-            {
-                try
-                {
-                    return JsonConvert.DeserializeObject<PlayerProfile>(json);
-                }
-                catch(JsonException ex)
-                {
-                    Console.WriteLine($"Ошибка загрузки профиля: {ex.Message}");
-                }
-            }
-
-            Console.WriteLine("Введите имя:");
-            string name = Console.ReadLine();
-
-            return new PlayerProfile { Name = name };
         }
 
         private void PlaySelectedGame(IGame game)
@@ -179,7 +165,7 @@ namespace Final_Task
             game.OnWin += () => HandleGameResult(true, bet);
             game.OnLose += () => HandleGameResult(false, bet);
             game.OnDraw += () => ColorConsoleWriteLine($"Вы проиграли {bet}. Новый банк: {_playerProfile.Bank}", ConsoleColor.Red);
-
+            
             game.PlayGame();
 
             // Отписываемся от событий
@@ -193,7 +179,7 @@ namespace Final_Task
             try
             {
                 string json = JsonConvert.SerializeObject(_playerProfile, Formatting.Indented);
-                _saveLoadService.SaveData(json, profileKey);
+                _saveLoadService.SavePlayerProfile(_playerProfile, profileKey);
             }
             catch(JsonException ex)
             {

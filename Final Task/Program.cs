@@ -13,8 +13,7 @@ namespace Final_Task
             {
                 string basePath = Path.Combine(Environment.CurrentDirectory, "CasinoSaves");
 
-                var saveLoadService = new FileSystemSaveLoadService(basePath);
-                var casino = new Casino(saveLoadService);
+                var casino = new Casino(basePath);
                 casino.StartGame();
             }
             catch(Exception ex)

@@ -10,9 +10,9 @@ namespace Final_Task.Games.Dice
     /// </summary>
     public class DiceGame : CasinoGameBase
     {
-        private readonly int _maxValue;
-        private readonly int _minValue;
-        private readonly int _numberOfDice;
+        private readonly byte _maxValue;
+        private readonly byte _minValue;
+        private readonly byte _numberOfDice;
         private List<Dice> _diceCollection;
 
         /// <summary>
@@ -22,7 +22,7 @@ namespace Final_Task.Games.Dice
         /// <param name="minDiceValue">мин значение</param>
         /// <param name="maxDiceValue">макс значение</param>
         /// <exception cref="ArgumentException">Ошибка ставки</exception>
-        public DiceGame(int numberOfDice, int minValue, int maxValue)
+        public DiceGame(byte numberOfDice, byte minValue, byte maxValue)
         {
             if(numberOfDice <= 0)
                 throw new ArgumentException("Количество костей должно быть положительным", nameof(numberOfDice));
@@ -45,25 +45,25 @@ namespace Final_Task.Games.Dice
         {
             Console.WriteLine($"Количество костей {_numberOfDice} значения ({_minValue}-{_maxValue})");
 
-            int playerScore = RollDice("Player");
-            int computerScore = RollDice("Computer");
+            byte playerScore = RollDice("Player");
+            byte computerScore = RollDice("Computer");
 
             Console.WriteLine($"\n  Результат - Player: {playerScore}, Computer: {computerScore}");
 
             if(playerScore > computerScore)
             {
                 PrintResult("Вы выиграли");
-                OnWinInvoke();
+                InvokeWin();
             }
             else if(computerScore > playerScore)
             {
                 PrintResult("Вы проиграли!");
-                OnLoseInvoke();
+                InvokeLose();
             }
             else
             {
                 PrintResult("Ничья!");
-                OnDrawInvoke();
+                InvokeDraw();
             }
         }
 
@@ -71,19 +71,19 @@ namespace Final_Task.Games.Dice
         {
             _diceCollection = new List<Dice>(_numberOfDice);
 
-            for(int i = 0; i < _numberOfDice; i++)
+            for(byte i = 0; i < _numberOfDice; i++)
             {
                 _diceCollection.Add(new Dice(_minValue, _maxValue));
             }
         }
-        private int RollDice(string playerName)
+        private byte RollDice(string playerName)
         {
             Console.WriteLine($"\n{playerName} бросает:");
-            int total = 0;
+            byte total = 0;
 
             foreach(var dice in _diceCollection)
             {
-                int roll = dice.Number;
+                byte roll = dice.Number;
                 Console.WriteLine($"выпало: {roll}");
                 total += roll;
             }

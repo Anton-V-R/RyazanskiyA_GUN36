@@ -3,7 +3,7 @@
     /// <summary>
     /// Перечисление мастей карт
     /// </summary>
-    public enum CardSuit
+    public enum CardSuit : byte
     {
         Diamonds,   // Бубны
         Hearts,     // Червы

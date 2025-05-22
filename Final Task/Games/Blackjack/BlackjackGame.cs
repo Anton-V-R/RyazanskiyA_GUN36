@@ -11,7 +11,15 @@ namespace Final_Task.Games.Blackjack
     public class BlackjackGame : CasinoGameBase
     {
         private readonly List<Card> _computerCards;
-        private readonly int _numberOfCards;
+        private readonly byte _numberOfCards;
+        private const byte _minCardSuit = 0;
+        private const byte _maxCardSuit = 4;
+        private const byte _minCardRank = 6;
+        private const byte _maxCardRank = 14;
+        private const byte _winScore = 21;
+        private const byte _deltaScore = 10;
+        private const byte _minAces = 0;
+
         private readonly List<Card> _playerCards;
         private Queue<Card> _deck;
         
@@ -20,7 +28,7 @@ namespace Final_Task.Games.Blackjack
         /// </summary>
         /// <param name="numberOfCards">Количество карт в колоде</param>
         /// <exception cref="ArgumentException"></exception>
-        public BlackjackGame(int numberOfCards)
+        public BlackjackGame(byte numberOfCards)
         {
             if(numberOfCards < 4)
                 throw new ArgumentException("Minimum 4 cards required", nameof(numberOfCards));
@@ -37,13 +45,13 @@ namespace Final_Task.Games.Blackjack
             Console.WriteLine("Starting Blackjack game...");
             PrintCards();
 
-            int playerScore = CalculateScore(_playerCards);
-            int computerScore = CalculateScore(_computerCards);
+            byte playerScore = CalculateScore(_playerCards);
+            byte computerScore = CalculateScore(_computerCards);
 
             Console.WriteLine($"Your score: {playerScore}");
             Console.WriteLine($"Computer score: {computerScore}");
 
-            while(playerScore == computerScore && playerScore < 21 && _deck.Count > 0)
+            while(playerScore == computerScore && playerScore < _winScore && _deck.Count > 0)
             {
                 Console.WriteLine("Tie! Dealing additional cards...");
                 _playerCards.Add(_deck.Dequeue());
@@ -67,27 +75,24 @@ namespace Final_Task.Games.Blackjack
             DealInitialCards();
         }
 
-        private int CalculateScore(List<Card> cards)
+        private byte CalculateScore(List<Card> cards)
         {
-            int score = 0;
-            int aces = 0;
+            byte score = 0;
+            byte aces = 0;
 
             foreach(var card in cards)
             {
-                if(card.Rank >= CardRank.Jack && card.Rank <= CardRank.King)
-                    score += 10;
-                else if(card.Rank == CardRank.Ace)
+                if(card.Rank == CardRank.Ace)
                 {
-                    score += 11;
                     aces++;
                 }
-                else
-                    score += (int)card.Rank;
+
+                score += (byte)card.Rank;
             }
 
-            while(score > 21 && aces > 0)
+            while(score > _winScore && aces > _minAces)
             {
-                score -= 10;
+                score -= _deltaScore;
                 aces--;
             }
 
@@ -98,10 +103,10 @@ namespace Final_Task.Games.Blackjack
         {
             var cards = new List<Card>();
 
-            for(int i = 0; i < _numberOfCards; i++)
+            for(byte i = 0; i < _numberOfCards; i++)
             {
-                var suit = (CardSuit)RandomProvider.Next(0, 4);
-                var rank = (CardRank)RandomProvider.Next(6, 14);
+                var suit = (CardSuit)RandomProvider.Next(_minCardSuit, _maxCardSuit);
+                var rank = (CardRank)RandomProvider.Next(_minCardRank, _maxCardRank);
                 cards.Add(new Card(suit, rank));
             }
 
@@ -120,37 +125,37 @@ namespace Final_Task.Games.Blackjack
 
         }
 
-        private void DetermineWinner(int playerScore, int computerScore)
+        private void DetermineWinner(byte playerScore, byte computerScore)
         {
-            if(playerScore > 21 && computerScore > 21)
+            if(playerScore > _winScore && computerScore > _winScore)
             {
                 PrintResult("Both players bust");
-                OnDrawInvoke();
+                InvokeDraw();
             }
-            else if(playerScore > 21)
+            else if(playerScore > _winScore)
             {
                 PrintResult("You bust");
-                OnLoseInvoke();
+                InvokeLose();
             }
-            else if(computerScore > 21)
+            else if(computerScore > _winScore)
             {
                 PrintResult("Computer bust");
-                OnWinInvoke();
+                InvokeWin();
             }
             else if(playerScore > computerScore)
             {
                 PrintResult("You win");
-                OnWinInvoke();
+                InvokeWin();
             }
             else if(computerScore > playerScore)
             {
                 PrintResult("Computer wins");
-                OnLoseInvoke();
+                InvokeLose();
             }
             else
             {
                 PrintResult("Push");
-                OnDrawInvoke();
+                InvokeDraw();
             }
         }
 

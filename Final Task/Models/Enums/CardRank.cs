@@ -3,17 +3,17 @@
     /// <summary>
     /// Перечисление достоинств карт
     /// </summary>
-    public enum CardRank
+    public enum CardRank : byte
     {
         Six = 6,
-        Seven,
-        Eight,
-        Nine,
-        Ten,
-        Jack,       // Валет
-        Queen,      // Дама
-        King,       // Король
-        Ace         // Туз
+        Seven = 7,
+        Eight = 8,
+        Nine = 9,
+        Ten = 10,
+        Jack = 10,       // Валет
+        Queen = 10,      // Дама
+        King = 10,       // Король
+        Ace = 11         // Туз
     }
 
 }

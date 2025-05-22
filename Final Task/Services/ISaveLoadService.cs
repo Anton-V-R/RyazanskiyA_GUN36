@@ -1,9 +1,10 @@
-﻿namespace Final_Task.Services
+﻿using Final_Task.Models;
+
+namespace Final_Task.Services
 {
     public interface ISaveLoadService<T>
     {
-        T LoadData(string identifier);
-
-        void SaveData(T data, string identifier);
+        T LoadPlayerProfile(string identifier);
+        void SavePlayerProfile(T profile, string identifier);
     }
 }
