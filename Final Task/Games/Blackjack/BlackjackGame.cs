@@ -130,32 +130,32 @@ namespace Final_Task.Games.Blackjack
             if(playerScore > _winScore && computerScore > _winScore)
             {
                 PrintResult("Both players bust");
-                InvokeDraw();
+                OnGameDrawn();
             }
             else if(playerScore > _winScore)
             {
                 PrintResult("You bust");
-                InvokeLose();
+                OnGameLost();
             }
             else if(computerScore > _winScore)
             {
                 PrintResult("Computer bust");
-                InvokeWin();
+                OnGameWon();
             }
             else if(playerScore > computerScore)
             {
                 PrintResult("You win");
-                InvokeWin();
+                OnGameWon();
             }
             else if(computerScore > playerScore)
             {
                 PrintResult("Computer wins");
-                InvokeLose();
+                OnGameLost();
             }
             else
             {
                 PrintResult("Push");
-                InvokeDraw();
+                OnGameDrawn();
             }
         }
 

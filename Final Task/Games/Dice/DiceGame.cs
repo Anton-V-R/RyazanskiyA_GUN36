@@ -53,17 +53,17 @@ namespace Final_Task.Games.Dice
             if(playerScore > computerScore)
             {
                 PrintResult("Вы выиграли");
-                InvokeWin();
+                OnGameWon();
             }
             else if(computerScore > playerScore)
             {
                 PrintResult("Вы проиграли!");
-                InvokeLose();
+                OnGameLost();
             }
             else
             {
                 PrintResult("Ничья!");
-                InvokeDraw();
+                OnGameDrawn();
             }
         }
 

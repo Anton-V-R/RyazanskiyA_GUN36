@@ -10,13 +10,16 @@ using Newtonsoft.Json;
 
 namespace Final_Task
 {
-    public class Casino
+    public class Casino : IGame, IDisposable
     {
         private const int maxBankValue = 1000000;
         private const string profileKey = "player_profile";
         private readonly PlayerProfile _playerProfile;
         private readonly ISaveLoadService<PlayerProfile> _saveLoadService;
-        public Casino(string basePath)
+
+        private int _currentBet;
+        private CasinoGameBase _currentGame;
+        public Casino(string basePath) 
         {
             _saveLoadService = new FileSystemSaveLoadService(basePath) ?? throw new ArgumentNullException($"Error {basePath}");
 
@@ -29,6 +32,50 @@ namespace Final_Task
                 AddMoney();
             }
         }
+
+        public event EventHandler GameDrawn
+        {
+            add
+            {
+                ((IGame)_currentGame).GameDrawn += value;
+            }
+
+            remove
+            {
+                ((IGame)_currentGame).GameDrawn -= value;
+            }
+        }
+
+        public event EventHandler GameLost
+        {
+            add
+            {
+                ((IGame)_currentGame).GameLost += value;
+            }
+
+            remove
+            {
+                ((IGame)_currentGame).GameLost -= value;
+            }
+        }
+
+        public event EventHandler GameWon
+        {
+            add
+            {
+                ((IGame)_currentGame).GameWon += value;
+            }
+
+            remove
+            {
+                ((IGame)_currentGame).GameWon -= value;
+            }
+        }
+        public void Dispose()
+        {
+            UnsubscribeFromGameEvents();
+        }
+        public void PlayGame() => ((IGame)_currentGame).PlayGame();
 
         public void StartGame()
         {
@@ -50,7 +97,7 @@ namespace Final_Task
                     }
 
                     IGame game;
-
+ 
                     switch(choice)
                     {
                         case 1:
@@ -81,8 +128,9 @@ namespace Final_Task
                             Console.WriteLine("До свидания!");
                             return;
                     }
+                    _currentGame = (CasinoGameBase)game;
 
-                    PlaySelectedGame(game);
+                    PlaySelectedGame();
                 }
 
                 ColorConsoleWriteLine("No money? Kicked!", ConsoleColor.Red);
@@ -136,6 +184,16 @@ namespace Final_Task
 
         }
 
+        private void HandleGameDraw(object sender, EventArgs e)
+        {
+            Console.WriteLine("Ничья! Ставка возвращена.");
+        }
+
+        private void HandleGameLose(object sender, EventArgs e)
+        {
+            HandleGameResult(false, _currentBet);
+        }
+
         private void HandleGameResult(bool isWin, int bet)
         {
             if(isWin)
@@ -152,27 +210,29 @@ namespace Final_Task
             CheckBankLimit();
         }
 
-        private void PlaySelectedGame(IGame game)
+
+        private void HandleGameWin(object sender, EventArgs e)
+        {
+            HandleGameResult(true, _currentBet);
+        }
+
+        private void PlaySelectedGame()
         {
             Console.Write($"Введите ставку (максимум {_playerProfile.Bank}): ");
-            int bet;
-            while(!int.TryParse(Console.ReadLine(), out bet) || bet <= 0 || bet > _playerProfile.Bank)
+
+            while(!int.TryParse(Console.ReadLine(), out _currentBet) || _currentBet <= 0 || _currentBet > _playerProfile.Bank)
             {
                 Console.WriteLine($"Некорректная ставка. Введите число от 1 до {_playerProfile.Bank}");
             }
 
-            // Подписываемся на события игры
-            game.OnWin += () => HandleGameResult(true, bet);
-            game.OnLose += () => HandleGameResult(false, bet);
-            game.OnDraw += () => ColorConsoleWriteLine($"Вы проиграли {bet}. Новый банк: {_playerProfile.Bank}", ConsoleColor.Red);
-            
-            game.PlayGame();
+            SubscribeToGameEvents();
 
-            // Отписываемся от событий
-            game.OnWin -= () => HandleGameResult(true, bet);
-            game.OnLose -= () => HandleGameResult(false, bet);
-            game.OnDraw -= () => ColorConsoleWriteLine($"Вы проиграли {bet}. Новый банк: {_playerProfile.Bank}", ConsoleColor.Red);
+            _currentGame.PlayGame();
+
+            UnsubscribeFromGameEvents();
+
         }
+
         private void SaveProfile()
         {
             const string profileKey = "player_profile";
@@ -184,6 +244,30 @@ namespace Final_Task
             catch(JsonException ex)
             {
                 Console.WriteLine($"Error saving profile: {ex.Message}");
+            }
+        }
+
+        // Подписка на события текущей игры
+        private void SubscribeToGameEvents()
+        {
+            if(_currentGame != null)
+            {
+                _currentGame.GameWon += HandleGameWin;
+                _currentGame.GameLost += HandleGameLose;
+                _currentGame.GameDrawn += HandleGameDraw;
+            }
+
+
+        }
+
+        // Отписка от событий
+        private void UnsubscribeFromGameEvents()
+        {
+            if(_currentGame != null)
+            {
+                _currentGame.GameWon -= HandleGameWin;
+                _currentGame.GameLost -= HandleGameLose;
+                _currentGame.GameDrawn -= HandleGameDraw;
             }
         }
     }
