@@ -29,7 +29,8 @@ namespace DefaultNamespace
 			{
 				enabled = false;
 				Debug.Log($"<b>{name}</b> finished", this);
-				return;
+
+                return;
 			}
 			
 			//todo comment: Почему не написать (_delay -= Time.deltaTime;) по аналогии с полем _duration?

@@ -12,28 +12,33 @@ namespace DefaultNamespace
 {
     public class PositionSaver : MonoBehaviour
     {
+        [SerializeField]
         public struct Data
         {
             public Vector3 Position;
             public float Time;
         }
 
-        [SerializeField] private TextAsset _json;
 
-        public List<Data> Records { get; private set; }
+        [field: SerializeField]
+        public TextAsset JsonData { get; private set; } // Свойство появится в инспекторе
+
+        [field: SerializeField, HideInInspector]
+        public List<Data> Records { get; private set; } // Скрыто в инспекторе, но сериализуется
+
 
         private void Awake()
         {
             //todo comment: Что будет, если в теле этого условия не сделать выход из метода?
             // Продолжится выполнение и выдаст ошибку Если _json не назначен, отключаем объект и выходим, чтобы избежать ошибок
-            if(_json == null)
+            if(JsonData == null)
             {
                 gameObject.SetActive(false);
                 Debug.LogError("Please, create TextAsset and add in field _json");
                 return;
             }
 
-            //JsonUtility.FromJsonOverwrite(_json.text, this);
+            JsonUtility.FromJsonOverwrite(JsonData.text, this);
             //todo comment: Для чего нужна эта проверка (что она позволяет избежать)?
             // Ошибок если при отсутствии записей.
             if(Records == null)
@@ -102,7 +107,7 @@ namespace DefaultNamespace
                 // Ищем TextAsset с именем "Path"
                 if(asset != null && asset.name == "Path")
                 {
-                    _json = asset;
+                    JsonData = asset;
                     UnityEditor.EditorUtility.SetDirty(this);
                     UnityEditor.AssetDatabase.SaveAssets();
                     UnityEditor.AssetDatabase.Refresh();
@@ -119,10 +124,10 @@ namespace DefaultNamespace
             SaveData();
         }
 
-        private void SaveData()
+        public void SaveData()
         {
             // Сохраняем данные в JSON при уничтожении объекта
-            if(_json != null && Records != null)
+            if(JsonData != null && Records != null)
             {
                 string json = JsonUtility.ToJson(Records, true);
 

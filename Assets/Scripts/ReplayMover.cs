@@ -32,12 +32,12 @@ namespace DefaultNamespace
 
 		private void Update()
 		{
-            if(_index >= _save.Records.Count)
-            {
-                enabled = false;
-                Debug.Log($"<b>{name}</b> finished", this);
-                return;
-            }
+            //if(_index >= _save.Records.Count)
+            //{
+            //    enabled = false;
+            //    Debug.Log($"<b>{name}</b> finished", this);
+            //    return;
+            //}
 
             var curr = _save.Records[_index];
 			//todo comment: Что проверяет это условие (с какой целью)?
@@ -48,11 +48,11 @@ namespace DefaultNamespace
 				_index++;
 				//todo comment: Для чего нужна эта проверка?
 				// проверка количества обработанных записей
-				//if (_index >= _save.Records.Count)
-				//{
-				//	enabled = false;
-				//	Debug.Log($"<b>{name}</b> finished", this);
-				//}
+				if(_index >= _save.Records.Count)
+				{
+					enabled = false;
+					Debug.Log($"<b>{name}</b> finished", this);
+				}
 			}
 			//todo comment: Для чего производятся эти вычисления (как в дальнейшем они применяются)?
 			// разница во времени
