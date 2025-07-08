@@ -4,51 +4,38 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    [SerializeField] private Ball _ballPrefab;
+    [SerializeField] private float _respawnDelay = 1f;
+
     private bool _ready = true;
-    private Rigidbody _ball;
+    private WaitForSeconds _respawnWait;
+    private static readonly WaitForEndOfFrame _waitForEndOfFrame = new ();
 
-    [SerializeField]
-    private Rigidbody _ballPrefab;
-    [SerializeField]
-    private float _startVelocity;
-    [SerializeField]
-    private float _lifetime;
-
-    [SerializeField]
-    private float _respawnDelay;
+    private void Awake()
+    {
+        // Инициализируем здесь, так как можем получить доступ к полю _respawnDelay
+        _respawnWait = new WaitForSeconds(_respawnDelay);
+    }
 
     private void Update()
     {
-        Debug.Log($"Update ready: {_ready}");
-        if(!_ready)
-            return;
-        if(Input.GetKey(KeyCode.Space))
+        if(_ready && Input.GetKeyDown(KeyCode.Space))
         {
-            Debug.Log("Space down");
-
-            StartCoroutine(Reloader());
-            _ball.isKinematic = false;
-            _ball.transform.parent = null;
-            _ball.velocity = transform.forward * _startVelocity;
-            Destroy(_ball.gameObject, _lifetime);
+            SpawnBall();
         }
     }
 
-    private IEnumerator Reloader()
+    private void SpawnBall()
     {
-        Debug.Log("Reloader");
         _ready = false;
-        yield return new WaitForSeconds(_respawnDelay);
-        Spawn();
+        Ball ball = Instantiate(_ballPrefab, transform.position + transform.forward, Quaternion.identity);
+        ball.Launch(transform.forward);
+        StartCoroutine(ReloadRoutine());
     }
 
-    private void Spawn()
+    private IEnumerator ReloadRoutine()
     {
-        Debug.Log("Spawn start");
-        _ball = Instantiate(_ballPrefab, transform);
-        _ball.isKinematic = true;
+        yield return _respawnWait;
         _ready = true;
-        Debug.Log("Spawn end");
     }
-
 }

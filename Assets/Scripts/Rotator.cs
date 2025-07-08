@@ -2,12 +2,13 @@ using System.Collections;
 
 using UnityEngine;
 
-using static UnityEngine.GraphicsBuffer;
-
+[RequireComponent(typeof(Rigidbody))]
 public class Rotator : MonoBehaviour
 {
-    [SerializeField] private Vector3 _rotate;
+    [SerializeField] private Vector3 _rotateSpeed;
+
     private Rigidbody _rb;
+    private static readonly WaitForEndOfFrame _wait = new();
 
     private IEnumerator Start()
     {
@@ -16,10 +17,8 @@ public class Rotator : MonoBehaviour
 
         while(true)
         {
-            _rb.MoveRotation(_rb.rotation * Quaternion.Euler(_rotate * Time.fixedDeltaTime));
-            //yield return new WaitForFixedUpdate();
-
-            yield return new WaitForEndOfFrame();
+            _rb.MoveRotation(_rb.rotation * Quaternion.Euler(_rotateSpeed * Time.fixedDeltaTime));
+            yield return _wait;
         }
     }
 }

@@ -6,10 +6,9 @@ public class Gates : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        //if(other.CompareTag("Ball"))
-        if(other.GetComponent<Ball>() != null)
+        if(other.TryGetComponent(out Ball ball))
         {
-            Destroy(other.gameObject);
+            Destroy(ball.gameObject);
             _score++;
             Debug.Log($"Score: {_score}");
         }
