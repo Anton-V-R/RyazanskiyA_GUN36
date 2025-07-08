@@ -12,7 +12,7 @@ namespace DefaultNamespace
 {
     public class PositionSaver : MonoBehaviour
     {
-        [SerializeField]
+        [Serializable]
         public struct Data
         {
             public Vector3 Position;
@@ -129,7 +129,7 @@ namespace DefaultNamespace
             // Сохраняем данные в JSON при уничтожении объекта
             if(JsonData != null && Records != null)
             {
-                string json = JsonUtility.ToJson(Records, true);
+                string json = JsonUtility.ToJson(this, true);
 
                 // System.Text.Json (для Unity 2021.2+)
                 //string json = System.Text.Json.JsonSerializer.Serialize(
